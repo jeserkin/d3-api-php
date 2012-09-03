@@ -1,0 +1,6 @@
+<?php
+
+require_once __DIR__ . '/SplClassLoader.php';
+
+$Loader = new SplClassLoader( 'Diablo3', __DIR__ . '/../src' );
+$Loader->register();
