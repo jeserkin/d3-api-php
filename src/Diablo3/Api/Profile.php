@@ -6,9 +6,9 @@
 namespace Diablo3\Api;
 
 use Diablo3\Api\Data,
-Diablo3\Api\Data\ArrayCollection,
-Diablo3\Util\Util,
-Diablo3\Exception\NotFoundException;
+	Diablo3\Api\Data\ArrayCollection,
+	Diablo3\Util\Util,
+	Diablo3\Exception\NotFoundException;
 
 class Profile extends AbstractApi
 {
@@ -105,6 +105,101 @@ class Profile extends AbstractApi
 		$Hero->setEliteKills( (int) $Result->kills->elites );
 
 		return $Hero;
+	}
+
+	/**
+	 * @link http://blizzard.github.com/d3-api-docs/#item-information
+	 *
+	 * @param string $itemPath
+	 * @throws NotFoundException
+	 * @return Data\Item\Item
+	 */
+	public function getItemInfo( $itemPath )
+	{
+		$Result = $this->get( 'data/' . trim( $itemPath ) );
+
+		if ( null === $Result )
+		{
+			throw new NotFoundException( 'No result returned' );
+		}
+
+		if ( isset( $Result->code ) )
+		{
+			throw new NotFoundException( Util::toSting( $Result->code ) . ' - ' . Util::toSting( $Result->reason ) );
+		}
+
+		$Item = new Data\Item\Item();
+
+		$this->fillItem( $Item, $Result );
+
+		$Item->setRequiredLevel( (int) $Result->requiredLevel );
+		$Item->setItemLevel( (int) $Result->itemLevel );
+		$Item->setBonusAffixes( (int) $Result->bonusAffixes );
+		$Item->setTypeName( Util::toSting( $Result->typeName ) );
+		$Item->setTypeId( Util::toSting( $Result->type->id ) );
+		$Item->setTwoHanded( (bool) $Result->type->twoHanded );
+
+		if ( isset( $Result->armor ) )
+		{
+			$Item->setArmor( $this->fetchMinMax( $Result->armor->min, $Result->armor->max ) );
+		}
+
+		if ( isset( $Result->dps ) )
+		{
+			$Item->setDps( $this->fetchMinMax( $Result->dps->min, $Result->dps->max ) );
+		}
+
+		if ( isset( $Result->attacksPerSecond ) )
+		{
+			$Item->setAttacksPerSecond( $this->fetchMinMax( $Result->attacksPerSecond->min, $Result->attacksPerSecond->max ) );
+		}
+
+		if ( isset( $Result->minDamage ) )
+		{
+			$Item->setMinDamage( $this->fetchMinMax( $Result->minDamage->min, $Result->minDamage->max ) );
+		}
+
+		if ( isset( $Result->maxDamage ) )
+		{
+			$Item->setMaxDamage( $this->fetchMinMax( $Result->maxDamage->min, $Result->maxDamage->max ) );
+		}
+
+		$this->setItemAttributes( $Item, $Result->attributes );
+		$this->setItemAttributesRaw( $Item, $Result->attributesRaw );
+
+		// @todo Need info about "socketEffects" section
+
+		$this->setItemSalvage( $Item, $Result->salvage );
+		$this->setItemGems( $Item, $Result->gems );
+
+		return $Item;
+	}
+
+	/**
+	 * @param int $min
+	 * @param int $max
+	 * @return ArrayCollection
+	 */
+	private function fetchMinMax( $min, $max )
+	{
+		$Object      = new ArrayCollection();
+		$minReturned = (int) $min;
+		$maxReturned = (int) $max;
+
+		if ( is_float( $min ) )
+		{
+			$minReturned = (float) $min;
+		}
+
+		if ( is_float( $max ) )
+		{
+			$maxReturned = (float) $max;
+		}
+
+		$Object->set( 'min', $minReturned );
+		$Object->set( 'max', $maxReturned );
+
+		return $Object;
 	}
 
 	/**
@@ -364,15 +459,9 @@ class Profile extends AbstractApi
 		foreach ( $bodyParts as $bodyPart )
 		{
 			$BodyPartItem = $Items->$bodyPart;
+			$Item         = new Data\Hero\Item();
 
-			$Item = new Data\Hero\Item();
-
-			$Item->setId( (int) $BodyPartItem->id );
-			$Item->setName( Util::toSting( $BodyPartItem->name ) );
-			$Item->setIcon( Util::toSting( $BodyPartItem->icon ) );
-			$Item->setDisplayColor( Util::toSting( $BodyPartItem->displayColor ) );
-			$Item->setTooltipParams( Util::toSting( $BodyPartItem->tooltipParams ) );
-
+			$this->fillItem( $Item, $BodyPartItem );
 			$ItemsList->set( $bodyPart, $Item );
 		}
 
@@ -447,5 +536,100 @@ class Profile extends AbstractApi
 		$Stats->setSecondaryResource( (int) $StatsItem->secondaryResource );
 
 		$Hero->setStats( $Stats );
+	}
+
+	/**
+	 * @param Data\Item\Item|Data\Item\Gem $Item
+	 * @param \stdClass $ItemAttributes
+	 */
+	private function setItemAttributes( $Item, $ItemAttributes )
+	{
+		$Attributes = new ArrayCollection();
+
+		foreach ( $ItemAttributes as $ItemAttribute )
+		{
+			$Attributes->add( Util::toSting( $ItemAttribute ) );
+		}
+
+		$Item->setAttributes( $Attributes );
+	}
+
+	/**
+	 * @param Data\Item\Item|Data\Item\Gem $Item
+	 * @param \stdClass $ItemAttributesRaw
+	 */
+	private function setItemAttributesRaw( $Item, $ItemAttributesRaw )
+	{
+		$AttributesRaw = new ArrayCollection();
+
+		foreach ( $ItemAttributesRaw as $itemAttributeRawName => $ItemAttributeRaw )
+		{
+			$AttributesRaw->set( Util::toSting( $itemAttributeRawName ), $this->fetchMinMax( $ItemAttributeRaw->min, $ItemAttributeRaw->max ) );
+		}
+
+		$Item->setAttributesRaw( $AttributesRaw );
+	}
+
+	/**
+	 * @param Data\Item\Item $Item
+	 * @param \stdClass $SalvageItemsList
+	 */
+	private function setItemSalvage( Data\Item\Item $Item, $SalvageItemsList )
+	{
+		$Salvage = new ArrayCollection();
+
+		foreach ( $SalvageItemsList as $ListItem )
+		{
+			$SalvageItem = new Data\Item\SalvageItem();
+
+			$SalvageItem->setChance( (int) $ListItem->chance );
+			$SalvageItem->setQuantity( (int) $ListItem->quantity );
+
+			$SalvagedItem = new Data\Item();
+			$this->fillItem( $SalvagedItem, $ListItem->item );
+
+			$SalvageItem->setItem( $Item );
+			$Salvage->add( $SalvageItem );
+		}
+
+		$Item->setSalvage( $Salvage );
+	}
+
+	/**
+	 * @param Data\Item $Item
+	 * @param \stdClass $ExtractionItem
+	 */
+	private function fillItem( Data\Item $Item, $ExtractionItem )
+	{
+		$Item->setId( Util::toSting( $ExtractionItem->id ) );
+		$Item->setName( Util::toSting( $ExtractionItem->name ) );
+		$Item->setIcon( Util::toSting( $ExtractionItem->icon ) );
+		$Item->setDisplayColor( Util::toSting( $ExtractionItem->displayColor ) );
+		$Item->setTooltipParams( Util::toSting( $ExtractionItem->tooltipParams ) );
+	}
+
+	/**
+	 * @param Data\Item\Item $Item
+	 * @param \stdClass $ItemGems
+	 */
+	private function setItemGems( Data\Item\Item $Item, $ItemGems )
+	{
+		$Gems = new ArrayCollection();
+
+		foreach ( $ItemGems as $ItemGem )
+		{
+			$Gem     = new Data\Item\Gem();
+			$GemItem = new Data\Item();
+
+			$this->fillItem( $GemItem, $ItemGem->item );
+			$Gem->setItem( $GemItem );
+
+			$this->setItemAttributesRaw( $Gem, $ItemGem->attributesRaw );
+			$this->setItemAttributes( $Gem, $ItemGem->attributes );
+
+			$Gems->add( $Gem );
+		}
+
+		$Item->setGems( $Gems );
 	}
 }

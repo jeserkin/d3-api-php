@@ -181,4 +181,54 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 			}
 		}
 	}
+
+	public function testGetItemInfo()
+	{
+		// MainHand
+		$Item = $this->diablo3->profile()->getItemInfo( 'item/Cm0I_NKn9gsSBwgEFaogtUkdhgJj6h3j5anwHUxjTzAdyvzuyB1fDB6fHWPY6agiCwgAFcVEAwAYACAiMAk49AJAAFAQYPQCaiUKDAgAEOOdp7aAgIDgBxIVCJTDxP4DEgcIBBVJ9YtfMA04AEABGNSCqZsJUAhYAA' );
+		$this->assertInstanceOf( 'Diablo3\Api\Data\Item\Item', $Item, 'Item is not an instance of Data\Item\Item!' );
+
+		if ( null !== ( $Armor = $Item->getArmor() ) )
+		{
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Armor, 'Armor is not an instance of ArrayCollection!' );
+		}
+
+		if ( null !== ( $Dps = $Item->getDps() ) )
+		{
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Dps, 'Dps is not an instance of ArrayCollection!' );
+		}
+
+		if ( null !== ( $AttacksPerSecond = $Item->getAttacksPerSecond() ) )
+		{
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $AttacksPerSecond, 'AttacksPerSecond is not an instance of ArrayCollection!' );
+		}
+
+		if ( null !== ( $MinDamage = $Item->getMinDamage() ) )
+		{
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $MinDamage, 'MinDamage is not an instance of ArrayCollection!' );
+		}
+
+		if ( null !== ( $MaxDamage = $Item->getMaxDamage() ) )
+		{
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $MaxDamage, 'MaxDamage is not an instance of ArrayCollection!' );
+		}
+
+		$ItemAttributes = $Item->getAttributes();
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $ItemAttributes, 'ItemAttributes is not an instance of ArrayCollection!' );
+
+		$ItemAttributesRaw = $Item->getAttributesRaw();
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $ItemAttributesRaw, 'ItemAttributesRaw is not an instance of ArrayCollection!' );
+
+		$Salvage = $Item->getSalvage();
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Salvage, 'Salvage is not an instance of ArrayCollection!' );
+
+		/** @var $SalvageItem Diablo3\Api\Data\Item\SalvageItem */
+		foreach ( $Salvage as $SalvageItem )
+		{
+			$this->assertInstanceOf( 'Diablo3\Api\Data\Item\SalvageItem', $SalvageItem, 'SalvageItem is not an instance of Data\Item\SalvageItem!' );
+
+			$InnerSalvageItem = $SalvageItem->getItem();
+			$this->assertInstanceOf( 'Diablo3\Api\Data\Item', $InnerSalvageItem, 'InnerSalvageItem is not an instance of Data\Item!' );
+		}
+	}
 }
