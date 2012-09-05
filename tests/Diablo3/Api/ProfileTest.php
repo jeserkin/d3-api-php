@@ -231,4 +231,52 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 			$this->assertInstanceOf( 'Diablo3\Api\Data\Item', $InnerSalvageItem, 'InnerSalvageItem is not an instance of Data\Item!' );
 		}
 	}
+
+	public function testGetFollowerInfo()
+	{
+		$Follower = $this->diablo3->profile()->getFollowerInfo( 'enchantress' );
+		$this->assertInstanceOf( 'Diablo3\Api\Data\Follower\Follower', $Follower, 'Follower is not an instance of Data\Follower\Follower!' );
+
+		$this->assertFollower( $Follower );
+	}
+
+	public function testGetEnchantressInfo()
+	{
+		$Follower = $this->diablo3->profile()->getEnchantressInfo();
+		$this->assertInstanceOf( 'Diablo3\Api\Data\Follower\Follower', $Follower, 'Follower is not an instance of Data\Follower\Follower!' );
+
+		$this->assertFollower( $Follower );
+	}
+
+	public function testGetTemplarInfo()
+	{
+		$Follower = $this->diablo3->profile()->getTemplarInfo();
+		$this->assertInstanceOf( 'Diablo3\Api\Data\Follower\Follower', $Follower, 'Follower is not an instance of Data\Follower\Follower!' );
+
+		$this->assertFollower( $Follower );
+	}
+
+	public function testScoundrelInfo()
+	{
+		$Follower = $this->diablo3->profile()->getScoundrelInfo();
+		$this->assertInstanceOf( 'Diablo3\Api\Data\Follower\Follower', $Follower, 'Follower is not an instance of Data\Follower\Follower!' );
+
+		$this->assertFollower( $Follower );
+	}
+
+	private function assertFollower( \Diablo3\Api\Data\Follower\Follower $Follower )
+	{
+		$Skills = $Follower->getSkills();
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Skills, 'Skills is not an instance of ArrayCollection!' );
+
+		foreach ( $Skills as $FollowerSkillList )
+		{
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $FollowerSkillList, 'FollowerSkillList is not an instance of ArrayCollection!' );
+
+			foreach ( $FollowerSkillList as $FollowerSkill )
+			{
+				$this->assertInstanceOf( 'Diablo3\Api\Data\Hero\Skill', $FollowerSkill, 'FollowerSkill is not an instance of Data\Hero\Skill!' );
+			}
+		}
+	}
 }

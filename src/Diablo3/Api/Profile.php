@@ -176,6 +176,70 @@ class Profile extends AbstractApi
 	}
 
 	/**
+	 * @link http://blizzard.github.com/d3-api-docs/#follower-information
+	 *
+	 * @return Data\Follower\Follower
+	 */
+	public function getEnchantressInfo()
+	{
+		return $this->getFollowerInfo( 'enchantress' );
+	}
+
+	/**
+	 * @link http://blizzard.github.com/d3-api-docs/#follower-information
+	 *
+	 * @return Data\Follower\Follower
+	 */
+	public function getTemplarInfo()
+	{
+		return $this->getFollowerInfo( 'templar' );
+	}
+
+	/**
+	 * @link http://blizzard.github.com/d3-api-docs/#follower-information
+	 *
+	 * @return Data\Follower\Follower
+	 */
+	public function getScoundrelInfo()
+	{
+		return $this->getFollowerInfo( 'scoundrel' );
+	}
+
+	/**
+	 * @link http://blizzard.github.com/d3-api-docs/#follower-information
+	 *
+	 * @param string $slug
+	 * @throws NotFoundException
+	 * @return Data\Follower\Follower
+	 */
+	public function getFollowerInfo( $slug )
+	{
+		$Result = $this->get( 'data/follower/' . trim( $slug ) );
+
+		if ( null === $Result )
+		{
+			throw new NotFoundException( 'No result returned' );
+		}
+
+		if ( isset( $Result->code ) )
+		{
+			throw new NotFoundException( Util::toSting( $Result->code ) . ' - ' . Util::toSting( $Result->reason ) );
+		}
+
+		$Follower = new Data\Follower\Follower();
+
+		$Follower->setSlug( Util::toSting( $Result->slug ) );
+		$Follower->setName( Util::toSting( $Result->name ) );
+		$Follower->setRealName( Util::toSting( $Result->realName ) );
+		$Follower->setPortrait( Util::toSting( $Result->portrait ) );
+
+		$this->setSkills( $Follower, $Result->skills->active, 'active' );
+		$this->setSkills( $Follower, $Result->skills->passive, 'passive' );
+
+		return $Follower;
+	}
+
+	/**
 	 * @param int $min
 	 * @param int $max
 	 * @return ArrayCollection
@@ -388,7 +452,7 @@ class Profile extends AbstractApi
 	}
 
 	/**
-	 * @param Data\Hero\Hero|Data\Hero\Follower $Character
+	 * @param Data\Hero|Data\Follower $Character
 	 * @param \stdClass $Skills
 	 * @param string $type
 	 */

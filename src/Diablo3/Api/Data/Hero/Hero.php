@@ -6,7 +6,7 @@
 namespace Diablo3\Api\Data\Hero;
 
 use Diablo3\Api\Data\ArrayCollection,
-Diablo3\Api\Data\Hero\Stats;
+	Diablo3\Api\Data\Hero\Stats;
 
 class Hero extends \Diablo3\Api\Data\Hero
 {
