@@ -40,6 +40,21 @@ class Hero extends \Diablo3\Api\Data\Hero
 	 */
 	private $progress;
 
+	/**
+	 * @var int
+	 */
+	private $killedBy;
+
+	/**
+	 * @var int
+	 */
+	private $killedAt;
+
+	/**
+	 * @var int
+	 */
+	private $killedWhen;
+
 	public function __construct()
 	{
 		$this->skills = new ArrayCollection();
@@ -141,5 +156,53 @@ class Hero extends \Diablo3\Api\Data\Hero
 	public function getProgress()
 	{
 		return $this->progress;
+	}
+
+	/**
+	 * @param int $killedBy
+	 */
+	public function setKilledBy( $killedBy )
+	{
+		$this->killedBy = $killedBy;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getKilledBy()
+	{
+		return $this->killedBy;
+	}
+
+	/**
+	 * @param int $killedAt
+	 */
+	public function setKilledAt( $killedAt )
+	{
+		$this->killedAt = $killedAt;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getKilledAt()
+	{
+		return $this->killedAt;
+	}
+
+	/**
+	 * @param int $killedWhen
+	 */
+	public function setKilledWhen( $killedWhen )
+	{
+		$this->killedWhen = $killedWhen;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getKilledWhen()
+	{
+		return $this->killedWhen;
 	}
 }

@@ -45,6 +45,14 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 			$this->assertInstanceOf( 'Diablo3\Api\Data\Profile\Artisan', $Artisan, 'Artisan is not an instance of Data\Profile\Artisan type!' );
 		}
 
+		$FallenHeroes = $Profile->getFallenHeroes();
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $FallenHeroes, 'FallenHeroes is not an instance of Data\ArrayCollection type!' );
+
+		foreach ( $FallenHeroes as $FallenHero )
+		{
+			$this->assertInstanceOf( 'Diablo3\Api\Data\Hero\Hero', $FallenHero, 'FallenHero is not an instance of Data\Hero\Hero type!' );
+		}
+
 		$Progression = $Profile->getProgression();
 		$this->assertInstanceOf( 'Diablo3\Api\Data\Profile\Progression', $Progression, 'Progression is not an instance of Data\Profile\Progression type!' );
 

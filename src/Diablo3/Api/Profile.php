@@ -50,7 +50,7 @@ class Profile extends AbstractApi
 			$this->setTimePlayed( $Profile, $Result->timePlayed );
 		}
 
-		// @todo Need info about "fallenHeroes" section
+		$this->setFallenHeroes( $Profile, $Result->fallenHeroes );
 
 		$Profile->setBattleTag( Util::toSting( $Result->battleTag ) );
 
@@ -652,26 +652,10 @@ class Profile extends AbstractApi
 	 */
 	private function setStats( Data\Hero\Hero $Hero, $StatsItem )
 	{
-		$Stats = new Data\Hero\Stats();
+		$Stats = $this->getStatsSimple( $StatsItem );
 
-		$Stats->setLife( (int) $StatsItem->life );
-		$Stats->setDamage( (float) $StatsItem->damage );
 		$Stats->setAttackSpeed( (float) $StatsItem->attackSpeed );
-		$Stats->setArmor( (int) $StatsItem->armor );
-		$Stats->setStrength( (int) $StatsItem->strength );
-		$Stats->setDexterity( (int) $StatsItem->dexterity );
-		$Stats->setVitality( (int) $StatsItem->vitality );
-		$Stats->setIntelligence( (int) $StatsItem->intelligence );
-		$Stats->setPhysicalResist( (int) $StatsItem->physicalResist );
-		$Stats->setFireResist( (int) $StatsItem->fireResist );
-		$Stats->setColdResist( (int) $StatsItem->coldResist );
-		$Stats->setLightningResist( (int) $StatsItem->lightningResist );
-		$Stats->setPoisonResist( (int) $StatsItem->poisonResist );
-		$Stats->setArcaneResist( (int) $StatsItem->arcaneResist );
 		$Stats->setCritDamage( (float) $StatsItem->critDamage );
-		$Stats->setDamageIncrease( (float) $StatsItem->damageIncrease );
-		$Stats->setCritChance( (float) $StatsItem->critChance );
-		$Stats->setDamageReduction( (float) $StatsItem->damageReduction );
 		$Stats->setBlockChance( (float) $StatsItem->blockChance );
 		$Stats->setThorns( (int) $StatsItem->thorns );
 		$Stats->setLifeSteal( (float) $StatsItem->lifeSteal );
@@ -685,6 +669,34 @@ class Profile extends AbstractApi
 		$Stats->setSecondaryResource( (int) $StatsItem->secondaryResource );
 
 		$Hero->setStats( $Stats );
+	}
+
+	/**
+	 * @param \stdClass $StatsItem
+	 * @return Data\Hero\Stats
+	 */
+	private function getStatsSimple( $StatsItem )
+	{
+		$Stats = new Data\Hero\Stats();
+
+		$Stats->setLife( (int) $StatsItem->life );
+		$Stats->setDamage( (float) $StatsItem->damage );
+		$Stats->setArmor( (int) $StatsItem->armor );
+		$Stats->setStrength( (int) $StatsItem->strength );
+		$Stats->setDexterity( (int) $StatsItem->dexterity );
+		$Stats->setVitality( (int) $StatsItem->vitality );
+		$Stats->setIntelligence( (int) $StatsItem->intelligence );
+		$Stats->setPhysicalResist( (int) $StatsItem->physicalResist );
+		$Stats->setFireResist( (int) $StatsItem->fireResist );
+		$Stats->setColdResist( (int) $StatsItem->coldResist );
+		$Stats->setLightningResist( (int) $StatsItem->lightningResist );
+		$Stats->setPoisonResist( (int) $StatsItem->poisonResist );
+		$Stats->setArcaneResist( (int) $StatsItem->arcaneResist );
+		$Stats->setDamageIncrease( (float) $StatsItem->damageIncrease );
+		$Stats->setCritChance( (float) $StatsItem->critChance );
+		$Stats->setDamageReduction( (float) $StatsItem->damageReduction );
+
+		return $Stats;
 	}
 
 	/**
@@ -855,5 +867,38 @@ class Profile extends AbstractApi
 		}
 
 		$Level->setUpgradeItems( $UpgradeItemsList );
+	}
+
+	/**
+	 * @param Data\Profile\Profile $Profile
+	 * @param \stdClass $FallenHeroes
+	 */
+	private function setFallenHeroes( Data\Profile\Profile $Profile, $FallenHeroes )
+	{
+		$FallenHeroesList = new ArrayCollection();
+
+		foreach ( $FallenHeroes as $FallenHeroeRow )
+		{
+			$Hero = new Data\Hero\Hero();
+
+			$Hero->setStats( $this->getStatsSimple( $FallenHeroeRow->stats ) );
+			$Hero->setEliteKills( (int) $FallenHeroeRow->kills->elites );
+
+			// @todo Need info about "items" section
+
+			$Hero->setDead( true );
+			$Hero->setKilledBy( (int) $FallenHeroeRow->death->killer );
+			$Hero->setKilledAt( (int) $FallenHeroeRow->death->location );
+			$Hero->setKilledWhen( (int) $FallenHeroeRow->death->time );
+			$Hero->setName( Util::toSting( $FallenHeroeRow->name ) );
+			$Hero->setLevel( (int) $FallenHeroeRow->level );
+			$Hero->setHardcore( (bool) $FallenHeroeRow->hardcore );
+			$Hero->setGender( (int) $FallenHeroeRow->gender );
+			$Hero->setClass( Util::toSting( $FallenHeroeRow->class ) );
+
+			$FallenHeroesList->set( (int) $FallenHeroeRow->heroId, $Hero );
+		}
+
+		$Profile->setFallenHeroes( $FallenHeroesList );
 	}
 }
