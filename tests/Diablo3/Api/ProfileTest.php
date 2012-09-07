@@ -48,9 +48,18 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 		$FallenHeroes = $Profile->getFallenHeroes();
 		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $FallenHeroes, 'FallenHeroes is not an instance of Data\ArrayCollection type!' );
 
+		/** @var $FallenHero \Diablo3\Api\Data\Hero\Hero */
 		foreach ( $FallenHeroes as $FallenHero )
 		{
 			$this->assertInstanceOf( 'Diablo3\Api\Data\Hero\Hero', $FallenHero, 'FallenHero is not an instance of Data\Hero\Hero type!' );
+
+			$Items = $FallenHero->getItems();
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Items, 'Items is not an instance of Data\ArrayCollection type!' );
+
+			foreach ( $Items as $Item )
+			{
+				$this->assertInstanceOf( 'Diablo3\Api\Data\Hero\Item', $Item, 'Item is not an instance of Data\Hero\Item!' );
+			}
 		}
 
 		$Progression = $Profile->getProgression();
@@ -110,11 +119,11 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf( 'Diablo3\Api\Data\Hero\Hero', $HeroProfile, 'HeroProfile is not an instance of Data\Hero\Hero type!' );
 
 		$Skills = $HeroProfile->getSkills();
-		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Skills, 'Skills is not an instance of ArrayCollection!' );
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Skills, 'Skills is not an instance of Data\ArrayCollection!' );
 
 		foreach ( $Skills as $SkillList )
 		{
-			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $SkillList, 'SkillList is not an instance of ArrayCollection!' );
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $SkillList, 'SkillList is not an instance of Data\ArrayCollection!' );
 
 			/** @var $Skill \Diablo3\Api\Data\Hero\Skill */
 			foreach ( $SkillList as $Skill )
@@ -130,7 +139,7 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 		}
 
 		$Items = $HeroProfile->getItems();
-		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Items, 'Items is not an instance of ArrayCollection!' );
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Items, 'Items is not an instance of Data\ArrayCollection!' );
 
 		foreach ( $Items as $Item )
 		{
@@ -138,7 +147,7 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 		}
 
 		$Followers = $HeroProfile->getFollowers();
-		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Followers, 'Followers is not an instance of ArrayCollection!' );
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Followers, 'Followers is not an instance of Data\ArrayCollection!' );
 
 		/** @var $Follower \Diablo3\Api\Data\Hero\Follower */
 		foreach ( $Followers as $Follower )
@@ -146,7 +155,7 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 			$this->assertInstanceOf( 'Diablo3\Api\Data\Hero\Follower', $Follower, 'Follower is not an instance of Data\Hero\Follower!' );
 
 			$FollowerItems = $Follower->getItems();
-			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $FollowerItems, 'FollowerItems is not an instance of ArrayCollection!' );
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $FollowerItems, 'FollowerItems is not an instance of Data\ArrayCollection!' );
 
 			foreach ( $FollowerItems as $FollowerItem )
 			{
@@ -154,11 +163,11 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 			}
 
 			$FollowerSkills = $Follower->getSkills();
-			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $FollowerSkills, 'FollowerSkills is not an instance of ArrayCollection!' );
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $FollowerSkills, 'FollowerSkills is not an instance of Data\ArrayCollection!' );
 
 			foreach ( $FollowerSkills as $FollowerSkillList )
 			{
-				$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $FollowerSkillList, 'FollowerSkillList is not an instance of ArrayCollection!' );
+				$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $FollowerSkillList, 'FollowerSkillList is not an instance of Data\ArrayCollection!' );
 
 				foreach ( $FollowerSkillList as $FollowerSkill )
 				{
@@ -171,11 +180,11 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf( 'Diablo3\Api\Data\Hero\Stats', $Stats, 'FollowerSkill is not an instance of Data\Hero\Stats!' );
 
 		$ProgressList = $HeroProfile->getProgress();
-		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $ProgressList, 'ProgressList is not an instance of ArrayCollection!' );
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $ProgressList, 'ProgressList is not an instance of Data\ArrayCollection!' );
 
 		foreach ( $ProgressList as $difficulty => $Acts )
 		{
-			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Acts, 'Acts is not an instance of ArrayCollection!' );
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Acts, 'Acts is not an instance of Data\ArrayCollection!' );
 
 			/** @var $Act \Diablo3\Api\Data\Profile\Act */
 			foreach ( $Acts as $actNumber => $Act )
@@ -198,37 +207,37 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 
 		if ( null !== ( $Armor = $Item->getArmor() ) )
 		{
-			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Armor, 'Armor is not an instance of ArrayCollection!' );
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Armor, 'Armor is not an instance of Data\ArrayCollection!' );
 		}
 
 		if ( null !== ( $Dps = $Item->getDps() ) )
 		{
-			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Dps, 'Dps is not an instance of ArrayCollection!' );
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Dps, 'Dps is not an instance of Data\ArrayCollection!' );
 		}
 
 		if ( null !== ( $AttacksPerSecond = $Item->getAttacksPerSecond() ) )
 		{
-			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $AttacksPerSecond, 'AttacksPerSecond is not an instance of ArrayCollection!' );
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $AttacksPerSecond, 'AttacksPerSecond is not an instance of Data\ArrayCollection!' );
 		}
 
 		if ( null !== ( $MinDamage = $Item->getMinDamage() ) )
 		{
-			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $MinDamage, 'MinDamage is not an instance of ArrayCollection!' );
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $MinDamage, 'MinDamage is not an instance of Data\ArrayCollection!' );
 		}
 
 		if ( null !== ( $MaxDamage = $Item->getMaxDamage() ) )
 		{
-			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $MaxDamage, 'MaxDamage is not an instance of ArrayCollection!' );
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $MaxDamage, 'MaxDamage is not an instance of Data\ArrayCollection!' );
 		}
 
 		$ItemAttributes = $Item->getAttributes();
-		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $ItemAttributes, 'ItemAttributes is not an instance of ArrayCollection!' );
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $ItemAttributes, 'ItemAttributes is not an instance of Data\ArrayCollection!' );
 
 		$ItemAttributesRaw = $Item->getAttributesRaw();
-		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $ItemAttributesRaw, 'ItemAttributesRaw is not an instance of ArrayCollection!' );
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $ItemAttributesRaw, 'ItemAttributesRaw is not an instance of Data\ArrayCollection!' );
 
 		$Salvage = $Item->getSalvage();
-		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Salvage, 'Salvage is not an instance of ArrayCollection!' );
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Salvage, 'Salvage is not an instance of Data\ArrayCollection!' );
 
 		/** @var $SalvageItem Diablo3\Api\Data\Item\SalvageItem */
 		foreach ( $Salvage as $SalvageItem )
@@ -275,11 +284,11 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 	private function assertFollower( \Diablo3\Api\Data\Follower\Follower $Follower )
 	{
 		$Skills = $Follower->getSkills();
-		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Skills, 'Skills is not an instance of ArrayCollection!' );
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Skills, 'Skills is not an instance of Data\ArrayCollection!' );
 
 		foreach ( $Skills as $FollowerSkillList )
 		{
-			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $FollowerSkillList, 'FollowerSkillList is not an instance of ArrayCollection!' );
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $FollowerSkillList, 'FollowerSkillList is not an instance of Data\ArrayCollection!' );
 
 			foreach ( $FollowerSkillList as $FollowerSkill )
 			{
@@ -311,7 +320,7 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf( 'Diablo3\Api\Data\Artisan\Artisan', $Artisan, 'Artisan is not an instance of Data\Artisan\Artisan!' );
 
 		$Tiers = $Artisan->getTiers();
-		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Tiers, 'Tiers is not an instance of ArrayCollection!' );
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Tiers, 'Tiers is not an instance of Data\ArrayCollection!' );
 
 		/** @var $Tier \Diablo3\Api\Data\Artisan\Tier\Tier */
 		foreach ( $Tiers as $tierNubmer => $Tier )
@@ -319,7 +328,7 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 			$this->assertInstanceOf( 'Diablo3\Api\Data\Artisan\Tier\Tier', $Tier, 'Tier is not an instance of Data\Artisan\Tier\Tier!' );
 
 			$Levels = $Tier->getLevels();
-			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Levels, 'Levels is not an instance of ArrayCollection!' );
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Levels, 'Levels is not an instance of Data\ArrayCollection!' );
 
 			/** @var $Level \Diablo3\Api\Data\Artisan\Tier\Level */
 			foreach ( $Levels as $tierLevel => $Level )
@@ -327,7 +336,7 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 				$this->assertInstanceOf( 'Diablo3\Api\Data\Artisan\Tier\Level', $Level, 'Level is not an instance of Data\Artisan\Tier\Level!' );
 
 				$TrainedRecipes = $Level->getTrainedRecipes();
-				$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $TrainedRecipes, 'TrainedRecipes is not an instance of ArrayCollection!' );
+				$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $TrainedRecipes, 'TrainedRecipes is not an instance of Data\ArrayCollection!' );
 
 				/** @var $TrainedRecipe \Diablo3\Api\Data\Artisan\Recipe */
 				foreach ( $TrainedRecipes as $TrainedRecipe )
@@ -336,7 +345,7 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 				}
 
 				$TaughtRecipes = $Level->getTaughtRecipes();
-				$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $TaughtRecipes, 'TaughtRecipes is not an instance of ArrayCollection!' );
+				$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $TaughtRecipes, 'TaughtRecipes is not an instance of Data\ArrayCollection!' );
 
 				/** @var $TaughtRecipe \Diablo3\Api\Data\Artisan\Recipe */
 				foreach ( $TaughtRecipes as $TaughtRecipe )
@@ -346,7 +355,7 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 
 				if ( null !== ( $UpgradeItems = $Level->getUpgradeItems() ) )
 				{
-					$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $TaughtRecipes, 'TaughtRecipes is not an instance of ArrayCollection!' );
+					$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $TaughtRecipes, 'TaughtRecipes is not an instance of Data\ArrayCollection!' );
 
 					/** @var $UpgradeItem \Diablo3\Api\Data\Artisan\Tier\UpgradeItem */
 					foreach ( $UpgradeItems as $UpgradeItem )
@@ -370,7 +379,7 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf( 'Diablo3\Api\Data\Artisan\Recipe', $Recipe, 'Level is not an instance of Data\Artisan\Recipe!' );
 
 		$Reagents = $Recipe->getReagents();
-		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Reagents, 'Reagents is not an instance of ArrayCollection!' );
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Reagents, 'Reagents is not an instance of Data\ArrayCollection!' );
 
 		/** @var $Reagent \Diablo3\Api\Data\Artisan\Tier\Reagent */
 		foreach ( $Reagents as $Reagent )

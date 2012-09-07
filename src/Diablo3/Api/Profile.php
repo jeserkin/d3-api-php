@@ -884,7 +884,7 @@ class Profile extends AbstractApi
 			$Hero->setStats( $this->getStatsSimple( $FallenHeroeRow->stats ) );
 			$Hero->setEliteKills( (int) $FallenHeroeRow->kills->elites );
 
-			// @todo Need info about "items" section
+			$this->setItems( $Hero, $FallenHeroeRow->items );
 
 			$Hero->setDead( true );
 			$Hero->setKilledBy( (int) $FallenHeroeRow->death->killer );
