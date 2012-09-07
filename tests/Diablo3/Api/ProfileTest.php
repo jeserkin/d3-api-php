@@ -279,4 +279,102 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 			}
 		}
 	}
+
+	public function testGetArtisanInfo()
+	{
+		$Artisan = $this->diablo3->profile()->getArtisanInfo( 'blacksmith' );
+		$this->assetArtisan( $Artisan );
+	}
+
+	public function testGetBlacksmithInfo()
+	{
+		$Artisan = $this->diablo3->profile()->getBlacksmithInfo();
+		$this->assetArtisan( $Artisan );
+	}
+
+	public function testGetJewelerInfo()
+	{
+		$Artisan = $this->diablo3->profile()->getJewelerInfo();
+		$this->assetArtisan( $Artisan );
+	}
+
+	private function assetArtisan( Diablo3\Api\Data\Artisan\Artisan $Artisan )
+	{
+		$this->assertInstanceOf( 'Diablo3\Api\Data\Artisan\Artisan', $Artisan, 'Artisan is not an instance of Data\Artisan\Artisan!' );
+
+		$Tiers = $Artisan->getTiers();
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Tiers, 'Tiers is not an instance of ArrayCollection!' );
+
+		/** @var $Tier \Diablo3\Api\Data\Artisan\Tier\Tier */
+		foreach ( $Tiers as $tierNubmer => $Tier )
+		{
+			$this->assertInstanceOf( 'Diablo3\Api\Data\Artisan\Tier\Tier', $Tier, 'Tier is not an instance of Data\Artisan\Tier\Tier!' );
+
+			$Levels = $Tier->getLevels();
+			$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Levels, 'Levels is not an instance of ArrayCollection!' );
+
+			/** @var $Level \Diablo3\Api\Data\Artisan\Tier\Level */
+			foreach ( $Levels as $tierLevel => $Level )
+			{
+				$this->assertInstanceOf( 'Diablo3\Api\Data\Artisan\Tier\Level', $Level, 'Level is not an instance of Data\Artisan\Tier\Level!' );
+
+				$TrainedRecipes = $Level->getTrainedRecipes();
+				$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $TrainedRecipes, 'TrainedRecipes is not an instance of ArrayCollection!' );
+
+				/** @var $TrainedRecipe \Diablo3\Api\Data\Artisan\Recipe */
+				foreach ( $TrainedRecipes as $TrainedRecipe )
+				{
+					$this->assertRecipe( $TrainedRecipe );
+				}
+
+				$TaughtRecipes = $Level->getTaughtRecipes();
+				$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $TaughtRecipes, 'TaughtRecipes is not an instance of ArrayCollection!' );
+
+				/** @var $TaughtRecipe \Diablo3\Api\Data\Artisan\Recipe */
+				foreach ( $TaughtRecipes as $TaughtRecipe )
+				{
+					$this->assertRecipe( $TaughtRecipe );
+				}
+
+				if ( null !== ( $UpgradeItems = $Level->getUpgradeItems() ) )
+				{
+					$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $TaughtRecipes, 'TaughtRecipes is not an instance of ArrayCollection!' );
+
+					/** @var $UpgradeItem \Diablo3\Api\Data\Artisan\Tier\UpgradeItem */
+					foreach ( $UpgradeItems as $UpgradeItem )
+					{
+						$this->assertInstanceOf( 'Diablo3\Api\Data\Artisan\Tier\Item', $UpgradeItem, 'UpgradeItem is not an instance of Data\Artisan\Tier\Item!' );
+						$this->assertInstanceOf( 'Diablo3\Api\Data\Artisan\Tier\UpgradeItem', $UpgradeItem, 'UpgradeItem is not an instance of Data\Artisan\Tier\UpgradeItem!' );
+
+						$Item = $UpgradeItem->getItem();
+						$this->assertInstanceOf( 'Diablo3\Api\Data\Item', $Item, 'Item is not an instance of Data\Item!' );
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param Diablo3\Api\Data\Artisan\Recipe $Recipe
+	 */
+	private function assertRecipe( Diablo3\Api\Data\Artisan\Recipe $Recipe )
+	{
+		$this->assertInstanceOf( 'Diablo3\Api\Data\Artisan\Recipe', $Recipe, 'Level is not an instance of Data\Artisan\Recipe!' );
+
+		$Reagents = $Recipe->getReagents();
+		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Reagents, 'Reagents is not an instance of ArrayCollection!' );
+
+		/** @var $Reagent \Diablo3\Api\Data\Artisan\Tier\Reagent */
+		foreach ( $Reagents as $Reagent )
+		{
+			$this->assertInstanceOf( 'Diablo3\Api\Data\Artisan\Tier\Item', $Reagent, 'Reagent is not an instance of Data\Artisan\Tier\Item!' );
+			$this->assertInstanceOf( 'Diablo3\Api\Data\Artisan\Tier\Reagent', $Reagent, 'Reagent is not an instance of Data\Artisan\Tier\Reagent!' );
+
+			$Item = $Reagent->getItem();
+			$this->assertInstanceOf( 'Diablo3\Api\Data\Item', $Item, 'Item is not an instance of Data\Item!' );
+		}
+
+		$ProducedItem = $Recipe->getItemProduced();
+		$this->assertInstanceOf( 'Diablo3\Api\Data\Item', $ProducedItem, 'ProducedItem is not an instance of Data\Item!' );
+	}
 }

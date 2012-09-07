@@ -240,6 +240,91 @@ class Profile extends AbstractApi
 	}
 
 	/**
+	 * @link http://blizzard.github.com/d3-api-docs/#artisan-information
+	 *
+	 * @return Data\Artisan\Artisan
+	 */
+	public function getBlacksmithInfo()
+	{
+		return $this->getArtisanInfo( 'blacksmith' );
+	}
+
+	/**
+	 * @link http://blizzard.github.com/d3-api-docs/#artisan-information
+	 *
+	 * @return Data\Artisan\Artisan
+	 */
+	public function getJewelerInfo()
+	{
+		return $this->getArtisanInfo( 'jeweler' );
+	}
+
+	/**
+	 * @link http://blizzard.github.com/d3-api-docs/#artisan-information
+	 *
+	 * @param string $slug
+	 * @throws NotFoundException
+	 * @return Data\Artisan\Artisan
+	 */
+	public function getArtisanInfo( $slug )
+	{
+		$Result = $this->get( 'data/artisan/' . trim( $slug ) );
+
+		if ( null === $Result )
+		{
+			throw new NotFoundException( 'No result returned' );
+		}
+
+		if ( isset( $Result->code ) )
+		{
+			throw new NotFoundException( Util::toSting( $Result->code ) . ' - ' . Util::toSting( $Result->reason ) );
+		}
+
+		$Artisan = new Data\Artisan\Artisan();
+
+		$Artisan->setSlug( Util::toSting( $Result->slug ) );
+		$Artisan->setName( Util::toSting( $Result->name ) );
+		$Artisan->setPortrait( Util::toSting( $Result->portrait ) );
+
+		$ArtisanTiers = new ArrayCollection();
+
+		foreach ( $Result->training->tiers as $ArtisanTier )
+		{
+			$Tier       = new Data\Artisan\Tier\Tier();
+			$TierLevels = new ArrayCollection();
+
+			$Tier->setTierNumber( (int) $ArtisanTier->tier );
+
+			foreach ( $ArtisanTier->levels as $ArtisanTierLevel )
+			{
+				$Level = new Data\Artisan\Tier\Level();
+
+				$Level->setTierNumber( (int) $ArtisanTierLevel->tier );
+				$Level->setTierLevel( (int) $ArtisanTierLevel->tierLevel );
+				$Level->setPercet( (int) $ArtisanTierLevel->percent );
+				$Level->setUpgradeCost( (int) $ArtisanTierLevel->upgradeCost );
+
+				$this->setRecipes( $Level, $ArtisanTierLevel->trainedRecipes, 'trained' );
+				$this->setRecipes( $Level, $ArtisanTierLevel->taughtRecipes, 'taught' );
+
+				if ( isset( $ArtisanTierLevel->upgradeItems ) )
+				{
+					$this->setUpgradeItems( $Level, $ArtisanTierLevel->upgradeItems );
+				}
+
+				$TierLevels->set( $Level->getTierLevel(), $Level );
+			}
+
+			$Tier->setLevels( $TierLevels );
+			$ArtisanTiers->set( $Tier->getTierNumber(), $Tier );
+		}
+
+		$Artisan->setTiers( $ArtisanTiers );
+
+		return $Artisan;
+	}
+
+	/**
 	 * @param int $min
 	 * @param int $max
 	 * @return ArrayCollection
@@ -695,5 +780,80 @@ class Profile extends AbstractApi
 		}
 
 		$Item->setGems( $Gems );
+	}
+
+	/**
+	 * @param Data\Artisan\Tier\Level $Level
+	 * @param \stdClass $Recipes
+	 * @param string $type
+	 * @throws NotFoundException
+	 * @return void
+	 */
+	private function setRecipes( Data\Artisan\Tier\Level $Level, $Recipes, $type )
+	{
+		$RecipesList = new ArrayCollection();
+
+		foreach ( $Recipes as $RecipeItem )
+		{
+			$Recipe = new Data\Artisan\Recipe();
+
+			$Recipe->setSlug( Util::toSting( $RecipeItem->slug ) );
+			$Recipe->setName( Util::toSting( $RecipeItem->name ) );
+			$Recipe->setCost( (int) $RecipeItem->cost );
+
+			$Reagents = new ArrayCollection();
+
+			foreach ( $RecipeItem->reagents as $ReagentItem )
+			{
+				$Reagent = new Data\Artisan\Tier\Reagent();
+				$Reagent->setQuantity( (int) $ReagentItem->quantity );
+
+				$Item = new Data\Item();
+				$this->fillItem( $Item, $ReagentItem->item );
+				$Reagent->setItem( $Item );
+
+				$Reagents->add( $Reagent );
+			}
+
+			$Recipe->setReagents( $Reagents );
+
+			$Item = new Data\Item();
+			$this->fillItem( $Item, $RecipeItem->itemProduced );
+			$Recipe->setItemProduced( $Item );
+
+			$RecipesList->add( $Recipe );
+		}
+
+		$method = 'set' . ucfirst( $type ) . 'Recipes';
+
+		if ( ! method_exists( $Level, $method ) )
+		{
+			throw new NotFoundException( "No method with name '{$method}' in class '" . get_class( $Level ) . "'!" );
+		}
+
+		$Level->$method( $RecipesList );
+	}
+
+	/**
+	 * @param Data\Artisan\Tier\Level $Level
+	 * @param \stdClass $UpgradeItems
+	 */
+	private function setUpgradeItems( Data\Artisan\Tier\Level $Level, $UpgradeItems )
+	{
+		$UpgradeItemsList = new ArrayCollection();
+
+		foreach ( $UpgradeItems as $UpgradeItemRow )
+		{
+			$UpgradeItem = new Data\Artisan\Tier\UpgradeItem();
+			$UpgradeItem->setQuantity( (int) $UpgradeItemRow->quantity );
+
+			$Item = new Data\Item();
+			$this->fillItem( $Item, $UpgradeItemRow->item );
+			$UpgradeItem->setItem( $Item );
+
+			$UpgradeItemsList->add( $UpgradeItem );
+		}
+
+		$Level->setUpgradeItems( $UpgradeItemsList );
 	}
 }
