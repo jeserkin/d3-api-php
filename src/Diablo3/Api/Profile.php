@@ -18,7 +18,7 @@ class Profile extends AbstractApi
 	 * @throws NotFoundException
 	 * @return Data\Profile\Profile
 	 */
-	public function getProfileInfo()
+	public function getCareerInfo()
 	{
 		$Result = $this->get( 'profile/' . $this->getClient()->getBattleTagName() . '-' . $this->getClient()->getBattleTagCode() . '/index' );
 

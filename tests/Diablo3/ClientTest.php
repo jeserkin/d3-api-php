@@ -14,7 +14,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->diablo3 = new \Diablo3\Client( $GLOBALS['region'], $GLOBALS['battle_tag_name'], $GLOBALS['battle_tag_code'] );
+		$this->diablo3 = new \Diablo3\Client( $GLOBALS['region'], $GLOBALS['battle_tag_name'], $GLOBALS['battle_tag_code'], $GLOBALS['locale'] );
 	}
 
 	public function testApi()

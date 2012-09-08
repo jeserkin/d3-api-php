@@ -16,6 +16,7 @@
 		<var name="region" value=""/>
 		<var name="battle_tag_name" value=""/>
 		<var name="battle_tag_code" value=""/>
+		<var name="locale" value=""/>
 
 		<var name="hero_id" value=""/>
 	</php>

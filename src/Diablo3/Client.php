@@ -7,12 +7,26 @@ namespace Diablo3;
 
 use Diablo3\Api\Profile,
 	Diablo3\Util\Curl,
-	InvalidArgumentException;
+	InvalidArgumentException,
+	Diablo3\Exception\NotFoundException;
 
 class Client
 {
 	const
 		URL = 'battle.net/api/d3/';
+
+	const
+		LOCALE_EN = 'en',
+		LOCALE_ES = 'es',
+		LOCALE_PT = 'pt',
+		LOCALE_IT = 'it',
+		LOCALE_DE = 'de',
+		LOCALE_FR = 'fr',
+		LOCALE_PL = 'pl',
+		LOCALE_RU = 'ru',
+		LOCALE_TR = 'tr',
+		LOCALE_KO = 'ko',
+		LOCALE_ZH = 'zh';
 
 	/**
 	 * @var string
@@ -30,6 +44,21 @@ class Client
 	private $battleTagCode;
 
 	/**
+	 * @var string
+	 */
+	private $locale;
+
+	/**
+	 * @var array
+	 */
+	private $allowedLocales = array(
+		'en', 'es', 'pt',
+		'it', 'de', 'fr',
+		'pl', 'ru', 'tr',
+		'ko', 'zh',
+	);
+
+	/**
 	 * The list of loaded API instances
 	 *
 	 * @var array
@@ -40,12 +69,21 @@ class Client
 	 * @param string $region
 	 * @param string $battleTagName
 	 * @param int $battleTagCode
+	 * @param string $locale
+	 * @throws NotFoundException
 	 */
-	public function __construct( $region, $battleTagName, $battleTagCode )
+	public function __construct( $region, $battleTagName, $battleTagCode, $locale )
 	{
 		$this->apiUrl        = 'http://' . $region . '.' . self::URL;
 		$this->battleTagName = $battleTagName;
 		$this->battleTagCode = $battleTagCode;
+
+		if ( ! in_array( $locale, $this->allowedLocales ) )
+		{
+			throw new NotFoundException( 'Specified is not used at present time!' );
+		}
+
+		$this->locale = $locale;
 	}
 
 	/**
@@ -79,7 +117,7 @@ class Client
 	public function get( $path )
 	{
 		$Curl = new Curl();
-		$Curl->curlGet( $this->getApiUrl() . $path );
+		$Curl->curlGet( $this->getApiUrl() . $path, $this->getOptions() );
 
 		return json_decode( $Curl->fetch() );
 	}
@@ -116,5 +154,20 @@ class Client
 		}
 
 		return $this->apis['profile'];
+	}
+
+	/**
+	 * @return array
+	 */
+	private function getOptions()
+	{
+		$options = array();
+
+		if ( null !== $this->locale )
+		{
+			$options['locale'] = $this->locale;
+		}
+
+		return $options;
 	}
 }

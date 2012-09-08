@@ -3,6 +3,7 @@
  * @author  Eugene Serkin <jeserkin@gmail.com>
  * @version $Id$
  */
+namespace Diablo3\Tests\Api;
 
 class ProfileTest  extends \PHPUnit_Framework_TestCase
 {
@@ -13,12 +14,12 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$this->diablo3 = new \Diablo3\Client( $GLOBALS['region'], $GLOBALS['battle_tag_name'], $GLOBALS['battle_tag_code'] );
+		$this->diablo3 = new \Diablo3\Client( $GLOBALS['region'], $GLOBALS['battle_tag_name'], $GLOBALS['battle_tag_code'], $GLOBALS['locale'] );
 	}
 
 	public function testGetProfileInfo()
 	{
-		$Profile = $this->diablo3->profile()->getProfileInfo();
+		$Profile = $this->diablo3->profile()->getCareerInfo();
 		$this->assertInstanceOf( 'Diablo3\Api\Data\Profile\Profile', $Profile, 'Profile is not an instance of Data\Profile\Profile type!' );
 
 		$Heroes = $Profile->getHeroes();
@@ -239,7 +240,7 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 		$Salvage = $Item->getSalvage();
 		$this->assertInstanceOf( 'Diablo3\Api\Data\ArrayCollection', $Salvage, 'Salvage is not an instance of Data\ArrayCollection!' );
 
-		/** @var $SalvageItem Diablo3\Api\Data\Item\SalvageItem */
+		/** @var $SalvageItem \Diablo3\Api\Data\Item\SalvageItem */
 		foreach ( $Salvage as $SalvageItem )
 		{
 			$this->assertInstanceOf( 'Diablo3\Api\Data\Item\SalvageItem', $SalvageItem, 'SalvageItem is not an instance of Data\Item\SalvageItem!' );
@@ -299,6 +300,7 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 
 	public function testGetArtisanInfo()
 	{
+		/** @var $Artisan \Diablo3\Api\Data\Artisan\Artisan */
 		$Artisan = $this->diablo3->profile()->getArtisanInfo( 'blacksmith' );
 		$this->assetArtisan( $Artisan );
 	}
@@ -315,7 +317,7 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 		$this->assetArtisan( $Artisan );
 	}
 
-	private function assetArtisan( Diablo3\Api\Data\Artisan\Artisan $Artisan )
+	private function assetArtisan( \Diablo3\Api\Data\Artisan\Artisan $Artisan )
 	{
 		$this->assertInstanceOf( 'Diablo3\Api\Data\Artisan\Artisan', $Artisan, 'Artisan is not an instance of Data\Artisan\Artisan!' );
 
@@ -372,9 +374,9 @@ class ProfileTest  extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @param Diablo3\Api\Data\Artisan\Recipe $Recipe
+	 * @param \Diablo3\Api\Data\Artisan\Recipe $Recipe
 	 */
-	private function assertRecipe( Diablo3\Api\Data\Artisan\Recipe $Recipe )
+	private function assertRecipe( \Diablo3\Api\Data\Artisan\Recipe $Recipe )
 	{
 		$this->assertInstanceOf( 'Diablo3\Api\Data\Artisan\Recipe', $Recipe, 'Level is not an instance of Data\Artisan\Recipe!' );
 
