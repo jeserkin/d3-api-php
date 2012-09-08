@@ -20,7 +20,7 @@ class Profile extends AbstractApi
 	 */
 	public function getProfileInfo()
 	{
-		$Result = $this->get( 'profile/' . $this->getClient()->getBattleTagName() . '-' . $this->getClient()->getBattleTagCode() . '/' );
+		$Result = $this->get( 'profile/' . $this->getClient()->getBattleTagName() . '-' . $this->getClient()->getBattleTagCode() . '/index' );
 
 		if ( null === $Result )
 		{
