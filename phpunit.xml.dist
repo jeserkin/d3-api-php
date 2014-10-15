@@ -13,16 +13,17 @@
 	bootstrap="./tests/bootstrap.php.dist">
 
 	<php>
-		<var name="region" value=""/>
-		<var name="battle_tag_name" value=""/>
-		<var name="battle_tag_code" value=""/>
-		<var name="locale" value=""/>
+		<var name="api_key" value="" />
+		
+		<var name="region" value="" />
+		<var name="battle_tag" value="" />
+		<var name="locale" value="" />
 
-		<var name="hero_id" value=""/>
+		<var name="hero_id" value="" />
 	</php>
 
 	<testsuites>
-		<testsuite name="Diablo 3 Hero Test Suite">
+		<testsuite name="Diablo 3 Test Suite">
 			<directory>./tests</directory>
 		</testsuite>
 	</testsuites>

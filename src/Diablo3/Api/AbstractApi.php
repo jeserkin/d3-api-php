@@ -1,42 +1,48 @@
 <?php
-/**
- * @author  Eugene Serkin <jeserkin@gmail.com>
- * @version $Id$
- */
 namespace Diablo3\Api;
 
-use Diablo3\Client;
+use Diablo3\Client,
+	
+	JMS\Serializer\SerializerBuilder;
 
 abstract class AbstractApi implements ApiInterface
 {
 	/**
-	 * @var Client
+	 * @var \Diablo3\Client
 	 */
 	private $client;
 
 	/**
-	 * @param Client $client
-	 * @return AbstractApi
+	 * @param \Diablo3\Client $Client
+	 * @return \Diablo3\Api\AbstractApi
 	 */
-	public function __construct( Client $client )
+	public function __construct( Client $Client )
 	{
-		$this->client = $client;
+		$this->client = $Client;
 	}
 
 	/**
-	 * @return Client
+	 * @return \Diablo3\Client
 	 */
 	protected function getClient()
 	{
 		return $this->client;
 	}
-
+	
 	/**
-	 * @param string $path
+	 * @param string $class
+	 * @param string $response
 	 * @return mixed
 	 */
-	public function get( $path )
+	protected function deserializeResponse( $class, $response )
 	{
-		return $this->client->get( $path );
+		$class = 'Diablo3\Api\Data\\' . $class;
+
+		/** @var \JMS\Serializer\SerializerBuilder $Builder */
+		$Builder = SerializerBuilder::create();
+
+		$Serializer = $Builder->build();
+
+		return $Serializer->deserialize( $response, $class, 'json' );
 	}
 }

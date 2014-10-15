@@ -1,4 +1,10 @@
-# Diablo 3 PHP Api v1
+Diablo 3 PHP Api v2
+-------------------
 
-## Usage
-All the usage can be found in tests.
+Usage:
+- Profile
+- Profile/Hero
+
+- Data/Item
+- Data/Follower
+- Data/Artisan
