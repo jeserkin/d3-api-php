@@ -2,7 +2,7 @@
 namespace Diablo3\Api;
 
 use Diablo3\Client,
-	
+
 	JMS\Serializer\SerializerBuilder;
 
 abstract class AbstractApi implements ApiInterface
@@ -28,7 +28,21 @@ abstract class AbstractApi implements ApiInterface
 	{
 		return $this->client;
 	}
-	
+
+	/**
+	 * @param string $class
+	 * @param string $path
+	 * @param array $options
+	 * @return mixed
+	 */
+	protected function get( $class, $path, array $options = array() )
+	{
+		//$deserializeResponse = $this->deserializeResponse( $class, $this->client->get( $path, $options ) );
+		//var_dump( $deserializeResponse ); exit;
+
+		return $this->deserializeResponse( $class, $this->client->get( $path, $options ) );
+	}
+
 	/**
 	 * @param string $class
 	 * @param string $response

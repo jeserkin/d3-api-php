@@ -4,20 +4,24 @@ namespace Diablo3;
 use Diablo3\Exception\InvalidRegionException,
 	Diablo3\Exception\InvalidBattleTagException,
 	Diablo3\Exception\InvalidLocaleException,
-	
-	InvalidArgumentException;
+	Diablo3\Exception\NotFoundException,
+	Diablo3\Util\Curl,
+	Diablo3\Response\JsonResponse,
+
+	InvalidArgumentException,
+	RuntimeException;
 
 class Client
 {
 	const
 		BASE_URL = 'api.battle.net/d3/';
-	
+
 	const
 		REGION_EU = 'eu',
 		REGION_KR = 'kr',
 		REGION_TW = 'tw',
 		REGION_US = 'us';
-	
+
 	const
 		LOCALE_EU_EN = 'en_GB',
 		LOCALE_EU_DE = 'de_DE',
@@ -27,11 +31,11 @@ class Client
 		LOCALE_EU_PL = 'pl_PL',
 		LOCALE_EU_PT = 'pt_PT',
 		LOCALE_EU_RU = 'ru_RU',
-		
+
 		LOCALE_KR_KO = 'ko_KR',
-		
+
 		LOCALE_TW_KO = 'zh_TW',
-		
+
 		LOCALE_US_EN = 'en_US',
 		LOCALE_US_PT = 'pt_BR',
 		LOCALE_US_ES = 'es_NX';
@@ -40,7 +44,7 @@ class Client
 	 * @var string
 	 */
 	protected $apiUrl;
-	
+
 	/**
 	 * @var string
 	 */
@@ -113,15 +117,15 @@ class Client
 		{
 			throw new InvalidRegionException( 'Specified region [' . $region . '] is not allowed!' );
 		}
-		
-		$this->apiUrl = 'http://' . $region . '.' . self::BASE_URL;
-		
+
+		$this->apiUrl = 'https://' . $region . '.' . self::BASE_URL;
+
 		if ( ! $this->isValidBattleTag( $battleTag ) )
 		{
 			throw new InvalidBattleTagException( 'Passed battle tag is of invalid format!' );
 		}
-		
-		$this->battleTag = $battleTag;
+
+		$this->battleTag = str_replace( '#', '-', $battleTag );
 
 		if ( ! $this->isValidLocale( $locale, $region ) )
 		{
@@ -159,7 +163,7 @@ class Client
 	{
 		return in_array( $locale, $this->allowedLocales[ $region ] );
 	}
-	
+
 	/**
 	 * @return string
 	 */
@@ -167,15 +171,110 @@ class Client
 	{
 		return $this->apiKey;
 	}
-	
-	public function get()
+
+	/**
+	 * @return string
+	 */
+	public function getBattleTag()
 	{
-		
+		return $this->battleTag;
 	}
-	
-	protected function parseRequestParameters()
+
+	/**
+	 * @param string $path
+	 * @param array $options
+	 * @throws \Diablo3\Exception\NotFoundException
+	 * @return string
+	 */
+	public function get( $path, array $options = array() )
 	{
+		$Curl = new Curl();
+		$Curl->curlGet( $this->getRequestUrl( $path, $options ), $this->getRequestParameters() );
+
+		$rawResponse = $Curl->fetch();
 		
+		if ( false !== ( $error = $Curl->getError() ) )
+		{
+			throw new RuntimeException( $error );
+		}
+
+		$httpCode = $Curl->getCurlInfo( CURLINFO_HTTP_CODE );
+
+		$Curl->closeRequest();
+
+		if ( 503 == $httpCode )
+		{
+            throw new RuntimeException( 'Limit exceeded' );
+        }
+
+		$Response = $this->getJsonResponse( $rawResponse );
+
+        if( $Response->hasErrors() )
+        {
+	        switch ( $Response->getErrorCode() )
+	        {
+		        case 'NOTFOUND':
+		        {
+			        throw new NotFoundException( $Response->getErrorMessage() );
+		        }
+	        }
+        }
+
+		return $Response->getResponse();
+	}
+
+	/**
+	 * @param string $path
+	 * @param array $options
+	 * @return string
+	 */
+	protected function getRequestUrl( $path, array $options )
+	{
+		$defautlOptions = array(
+			'search' => array(
+				'{battle-tag}',
+			),
+			'replace' => array(
+				$this->battleTag,
+			),
+		);
+
+		if ( ! isset( $options['search'] ) )
+		{
+			$options['search'] = array();
+		}
+
+		if ( ! isset( $options['replace'] ) )
+		{
+			$options['replace'] = array();
+		}
+
+		$options['search'] = array_merge( $options['search'], $defautlOptions['search'] );
+		$options['replace'] = array_merge( $options['replace'], $defautlOptions['replace'] );
+
+		$path = str_replace( $options['search'], $options['replace'], $path );
+
+		return $this->apiUrl . trim( $path, '/' ) . '/';
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getRequestParameters()
+	{
+		return array(
+			'locale' => $this->locale,
+			'apikey' => $this->apiKey,
+		);
+	}
+
+	/**
+	 * @param string $rawResponse
+	 * @return \Diablo3\Response\ResponseInterface
+	 */
+	protected function getJsonResponse( $rawResponse )
+	{
+		return new JsonResponse( $rawResponse );
 	}
 
 	/**
@@ -191,27 +290,27 @@ class Client
 			{
 				return $this->profile();
 			}
-				
+
 			case 'hero':
 			{
 				return $this->hero();
 			}
-				
+
 			case 'item':
 			{
 				return $this->item();
 			}
-			
+
 			case 'follower':
 			{
 				return $this->follower();
 			}
-			
+
 			case 'artisan':
 			{
 				return $this->artisan();
 			}
-			
+
 			default:
 			{
 				throw new InvalidArgumentException( 'No such api at present time!' );

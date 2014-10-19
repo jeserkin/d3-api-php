@@ -14,7 +14,8 @@
 	"require": {
 		"php": ">=5.3.2",
 		"ext-curl": "*",
-		"jms/serializer": "dev-master"
+		"jms/serializer": "dev-master",
+		"doctrine/collections": "v1.2"
 	},
 	"minimum-stability": "dev",
 	"autoload": {
