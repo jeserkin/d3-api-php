@@ -8,6 +8,7 @@ use Diablo3\Tests\Setup,
 	Diablo3\Api\Data\Profile\Item,
 	Diablo3\Api\Data\Profile\Recipe,
 	Diablo3\Api\Data\Profile\Artisan;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class ProfileTest extends Setup
 {
@@ -24,6 +25,7 @@ class ProfileTest extends Setup
 		$this->assertInstanceOf( 'Diablo3\Api\Data\Profile\TimePlayed', $Profile->getTimePlayed(), 'Profile->TimePlayed is not of type Diablo3\Api\Data\Profile\TimePlayed!' );
 		$this->assertInstanceOf( 'Diablo3\Api\Data\Profile\Progression', $Profile->getProgression(), 'Profile->Progression is not of type Diablo3\Api\Data\Profile\Progression!' );
 		$this->assertFallenHeroes( $Profile );
+
 		$this->assertArtisan( $Profile->getBlacksmith() );
 		$this->assertArtisan( $Profile->getJeweler() );
 		$this->assertArtisan( $Profile->getMystic() );
@@ -40,7 +42,7 @@ class ProfileTest extends Setup
 		$this->assertArtisan( $Profile->getJewelerSeasonHardcore() );
 		$this->assertArtisan( $Profile->getMysticSeasonHardcore() );
 
-		// @TODO assertSeasonalProfiles
+		$this->assertSeasonalProfiles( $Profile->getSeasonalProfiles() );
 	}
 
 	/**
@@ -240,5 +242,20 @@ class ProfileTest extends Setup
 	protected function assertArtisan( Artisan $Artisan )
 	{
 		$this->assertInstanceOf( 'Diablo3\Api\Data\Profile\Artisan', $Artisan, 'Artisan is not of type Diablo3\Api\Data\Profile\Artisan!' );
+	}
+
+	/**
+	 * @param \Doctrine\Common\Collections\ArrayCollection $Seasons
+	 */
+	protected function assertSeasonalProfiles( ArrayCollection $Seasons )
+	{
+		/** @var \Diablo3\Api\Data\Profile\Season $Season */
+		foreach ( $Seasons as $Season )
+		{
+			$this->assertInstanceOf( 'Diablo3\Api\Data\Profile\Season', $Season, 'Season is not of type Diablo3\Api\Data\Profile\Season!' );
+			$this->assertInstanceOf( 'Diablo3\Api\Data\Profile\Kills', $Season->getKills(), 'Season->Kills is not of type Diablo3\Api\Data\Profile\Kills!' );
+			$this->assertInstanceOf( 'Diablo3\Api\Data\Profile\TimePlayed', $Season->getTimePlayed(), 'Season->TimePlayed is not of type Diablo3\Api\Data\Profile\TimePlayed!' );
+			$this->assertInstanceOf( 'Diablo3\Api\Data\Profile\Progression', $Season->getProgression(), 'Season->Progression is not of type Diablo3\Api\Data\Profile\Progression!' );
+		}
 	}
 }
