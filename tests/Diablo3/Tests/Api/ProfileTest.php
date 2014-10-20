@@ -7,8 +7,9 @@ use Diablo3\Tests\Setup,
 	Diablo3\Api\Data\Profile\Items,
 	Diablo3\Api\Data\Profile\Item,
 	Diablo3\Api\Data\Profile\Recipe,
-	Diablo3\Api\Data\Profile\Artisan;
-use Doctrine\Common\Collections\ArrayCollection;
+	Diablo3\Api\Data\Profile\Artisan,
+
+	Doctrine\Common\Collections\ArrayCollection;
 
 class ProfileTest extends Setup
 {
