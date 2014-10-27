@@ -37,8 +37,8 @@ abstract class AbstractApi implements ApiInterface
 	 */
 	protected function get( $class, $path, array $options = array() )
 	{
-		//$deserializeResponse = $this->deserializeResponse( $class, $this->client->get( $path, $options ) );
-		//var_dump( $deserializeResponse ); exit;
+		$deserializeResponse = $this->deserializeResponse( $class, $this->client->get( $path, $options ) );
+		var_dump( $deserializeResponse ); exit;
 
 		return $this->deserializeResponse( $class, $this->client->get( $path, $options ) );
 	}

@@ -192,7 +192,7 @@ class Client
 		$Curl->curlGet( $this->getRequestUrl( $path, $options ), $this->getRequestParameters() );
 
 		$rawResponse = $Curl->fetch();
-		
+
 		if ( false !== ( $error = $Curl->getError() ) )
 		{
 			throw new RuntimeException( $error );
@@ -254,7 +254,7 @@ class Client
 
 		$path = str_replace( $options['search'], $options['replace'], $path );
 
-		return $this->apiUrl . trim( $path, '/' ) . '/';
+		return $this->apiUrl . ltrim( $path, '/' );
 	}
 
 	/**
