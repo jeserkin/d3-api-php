@@ -56,6 +56,7 @@ class Hero
 
 	/**
 	 * @JMS\Type("integer")
+	 * @JMS\SerializedName("seasonCreated")
 	 * @var int
 	 */
 	private $seasonCreated;
