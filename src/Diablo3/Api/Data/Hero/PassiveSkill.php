@@ -3,7 +3,7 @@ namespace Diablo3\Api\Data\Hero;
 
 use JMS\Serializer\Annotation as JMS;
 
-class ActiveSkill
+class PassiveSkill
 {
 	/**
 	 * @JMS\Type("Diablo3\Api\Data\Hero\Skill")
@@ -12,24 +12,10 @@ class ActiveSkill
 	private $skill;
 
 	/**
-	 * @JMS\Type("Diablo3\Api\Data\Hero\Rune")
-	 * @var \Diablo3\Api\Data\Hero\Rune
-	 */
-	private $rune;
-
-	/**
 	 * @return \Diablo3\Api\Data\Hero\Skill
 	 */
 	public function getSkill()
 	{
 		return $this->skill;
-	}
-
-	/**
-	 * @return \Diablo3\Api\Data\Hero\Rune
-	 */
-	public function getRune()
-	{
-		return $this->rune;
 	}
 }

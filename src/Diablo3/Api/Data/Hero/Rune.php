@@ -61,4 +61,76 @@ class Rune
 	 * @var int
 	 */
 	private $order;
+
+	/**
+	 * @return string
+	 */
+	public function getSlug()
+	{
+		return $this->slug;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getType()
+	{
+		return $this->type;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getLevel()
+	{
+		return $this->level;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return $this->description;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSimpleDescription()
+	{
+		return $this->simpleDescription;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTooltipParams()
+	{
+		return $this->tooltipParams;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSkillCalcId()
+	{
+		return $this->skillCalcId;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getOrder()
+	{
+		return $this->order;
+	}
 }

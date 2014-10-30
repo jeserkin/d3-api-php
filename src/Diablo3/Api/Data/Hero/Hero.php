@@ -66,4 +66,10 @@ class Hero
 	 * @var \Diablo3\Api\Data\Hero\Skills
 	 */
 	private $skills;
+
+	/**
+	 * @JMS\Type("Diablo3\Api\Data\Profile\Items")
+	 * @var \Diablo3\Api\Data\Profile\Items
+	 */
+	private $items;
 }
