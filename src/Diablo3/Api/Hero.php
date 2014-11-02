@@ -5,7 +5,7 @@ class Hero extends AbstractApi
 {
 	/**
 	 * @param int $heroId
-	 * @return \Diablo3\Api\Data\Profile\Profile
+	 * @return \Diablo3\Api\Data\Hero\Hero
 	 */
 	public function getHero( $heroId )
 	{

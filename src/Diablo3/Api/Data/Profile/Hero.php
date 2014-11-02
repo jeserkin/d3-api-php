@@ -2,7 +2,7 @@
 namespace Diablo3\Api\Data\Profile;
 
 use JMS\Serializer\Annotation as JMS,
-	
+
 	DateTime;
 
 class Hero
@@ -14,61 +14,61 @@ class Hero
 		BARBARIAN    = 'barbarian',
 		WIZARD       = 'wizard',
 		CRUSADER     = 'crusader';
-	
+
 	/**
 	 * @JMS\Type("integer")
 	 * @JMS\SerializedName("paragonLevel")
 	 * @var int
 	 */
-	private $paragonLevel;
+	protected $paragonLevel;
 
 	/**
 	 * @JMS\Type("boolean")
 	 * @var bool
 	 */
-	private $seasonal;
+	protected $seasonal;
 
 	/**
 	 * @JMS\Type("string")
 	 * @var string
 	 */
-	private $name;
+	protected $name;
 
 	/**
 	 * @JMS\Type("integer")
 	 * @var int
 	 */
-	private $id;
-	
-	/**
-	 * @JMS\Type("integer")
-	 * @var int
-	 */
-	private $level;
-	
-	/**
-	 * @JMS\Type("boolean")
-	 * @var bool
-	 */
-	private $hardcore;
+	protected $id;
 
 	/**
 	 * @JMS\Type("integer")
 	 * @var int
 	 */
-	private $gender;
-	
+	protected $level;
+
 	/**
 	 * @JMS\Type("boolean")
 	 * @var bool
 	 */
-	private $dead;
+	protected $hardcore;
+
+	/**
+	 * @JMS\Type("integer")
+	 * @var int
+	 */
+	protected $gender;
+
+	/**
+	 * @JMS\Type("boolean")
+	 * @var bool
+	 */
+	protected $dead;
 
 	/**
 	 * @JMS\Type("string")
 	 * @var string
 	 */
-	private $class;
+	protected $class;
 
 	/**
 	 * @JMS\Type("integer")
@@ -76,7 +76,7 @@ class Hero
 	 * @JMS\SerializedName("last-updated")
 	 * @var \DateTime
 	 */
-	private $lastUpdated;
+	protected $lastUpdated;
 
 	/**
 	 * @return int
