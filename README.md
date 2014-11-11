@@ -2,7 +2,7 @@ Diablo 3 PHP Api v2
 -------------------
 
 Usage:
-- Profile
+- Profile :heavy_check_mark:
 - Profile/Hero
 
 - Data/Item
