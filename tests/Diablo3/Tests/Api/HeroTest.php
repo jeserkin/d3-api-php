@@ -3,6 +3,7 @@ namespace Diablo3\Tests\Api;
 
 use Diablo3\Tests\Setup,
 
+	Diablo3\Api\Data\Hero\Act,
 	Diablo3\Api\Data\Hero\Skills,
 	Diablo3\Api\Data\Profile\Items,
 	Diablo3\Api\Data\Profile\Item,
@@ -34,6 +35,18 @@ class HeroTest extends Setup
 		$Followers = $Hero->getFollowers();
 		$this->assertInstanceOf( 'Diablo3\Api\Data\Hero\Followers', $Followers, 'Hero->Followers is not of type Diablo3\Api\Data\Hero\Followers!' );
 		$this->assertFollowers( $Followers );
+
+		$this->assertInstanceOf( 'Diablo3\Api\Data\Hero\Stats', $Hero->getStats(), 'Hero->Stats is not of type Diablo3\Api\Data\Hero\Stats!' );
+		$this->assertInstanceOf( 'Diablo3\Api\Data\Hero\Kills', $Hero->getKills(), 'Hero->Kills is not of type Diablo3\Api\Data\Hero\Kills!' );
+
+		$Progression = $Hero->getProgression();
+		$this->assertInstanceOf( 'Diablo3\Api\Data\Hero\Progression', $Progression, 'Hero->Progression is not of type Diablo3\Api\Data\Hero\Progression!' );
+
+		$this->assertAct( $Progression->getAct1() );
+		$this->assertAct( $Progression->getAct2() );
+		$this->assertAct( $Progression->getAct3() );
+		$this->assertAct( $Progression->getAct4() );
+		$this->assertAct( $Progression->getAct5() );
 	}
 
 	/**
@@ -303,6 +316,22 @@ class HeroTest extends Setup
 		{
 			$this->assertInstanceOf( 'Diablo3\Api\Data\Profile\Item', $Neck, 'Items->Neck is not of type Diablo3\Api\Data\Profile\Item!' );
 			$this->assertItem( $Neck );
+		}
+	}
+
+	/**
+	 * @param \Diablo3\Api\Data\Hero\Act $Act
+	 */
+	protected function assertAct( Act $Act )
+	{
+		$this->assertInstanceOf( 'Diablo3\Api\Data\Hero\Act', $Act, 'Act is not of type Diablo3\Api\Data\Hero\Act!' );
+
+		$CompletedQuests = $Act->getCompletedQuests();
+		$this->assertInstanceOf( 'Doctrine\Common\Collections\ArrayCollection', $CompletedQuests, 'Act->CompletedQuests is not of type Doctrine\Common\Collections\ArrayCollection!' );
+
+		foreach ( $CompletedQuests as $CompletedQuest )
+		{
+			$this->assertInstanceOf( 'Diablo3\Api\Data\Hero\CompletedQuest', $CompletedQuest, 'CompletedQuest is not of type Diablo3\Api\Data\Hero\CompletedQuest!' );
 		}
 	}
 }

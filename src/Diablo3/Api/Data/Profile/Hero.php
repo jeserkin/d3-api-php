@@ -17,6 +17,36 @@ class Hero
 
 	/**
 	 * @JMS\Type("integer")
+	 * @var int
+	 */
+	protected $id;
+
+	/**
+	 * @JMS\Type("string")
+	 * @var string
+	 */
+	protected $name;
+
+	/**
+	 * @JMS\Type("string")
+	 * @var string
+	 */
+	protected $class;
+
+	/**
+	 * @JMS\Type("integer")
+	 * @var int
+	 */
+	protected $gender;
+
+	/**
+	 * @JMS\Type("integer")
+	 * @var int
+	 */
+	protected $level;
+
+	/**
+	 * @JMS\Type("integer")
 	 * @JMS\SerializedName("paragonLevel")
 	 * @var int
 	 */
@@ -26,49 +56,19 @@ class Hero
 	 * @JMS\Type("boolean")
 	 * @var bool
 	 */
-	protected $seasonal;
-
-	/**
-	 * @JMS\Type("string")
-	 * @var string
-	 */
-	protected $name;
-
-	/**
-	 * @JMS\Type("integer")
-	 * @var int
-	 */
-	protected $id;
-
-	/**
-	 * @JMS\Type("integer")
-	 * @var int
-	 */
-	protected $level;
+	protected $hardcore;
 
 	/**
 	 * @JMS\Type("boolean")
 	 * @var bool
 	 */
-	protected $hardcore;
-
-	/**
-	 * @JMS\Type("integer")
-	 * @var int
-	 */
-	protected $gender;
+	protected $seasonal;
 
 	/**
 	 * @JMS\Type("boolean")
 	 * @var bool
 	 */
 	protected $dead;
-
-	/**
-	 * @JMS\Type("string")
-	 * @var string
-	 */
-	protected $class;
 
 	/**
 	 * @JMS\Type("integer")
@@ -81,17 +81,9 @@ class Hero
 	/**
 	 * @return int
 	 */
-	public function getParagonLevel()
+	public function getId()
 	{
-		return $this->paragonLevel;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isSeasonal()
-	{
-		return $this->seasonal;
+		return $this->id;
 	}
 
 	/**
@@ -100,62 +92,6 @@ class Hero
 	public function getName()
 	{
 		return $this->name;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getLevel()
-	{
-		return $this->level;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isHardcore()
-	{
-		return $this->hardcore;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getGender()
-	{
-		return ( $this->gender ? 'female' : 'male' );
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isMale()
-	{
-		return ( 0 == $this->gender );
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isFemale()
-	{
-		return ( 1 == $this->gender );
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function isDead()
-	{
-		return $this->dead;
 	}
 
 	/**
@@ -212,6 +148,70 @@ class Hero
 	public function isCrusader()
 	{
 		return ( self::CRUSADER == $this->class );
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getGender()
+	{
+		return ( $this->gender ? 'female' : 'male' );
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isMale()
+	{
+		return ( 0 == $this->gender );
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isFemale()
+	{
+		return ( 1 == $this->gender );
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getLevel()
+	{
+		return $this->level;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getParagonLevel()
+	{
+		return $this->paragonLevel;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isHardcore()
+	{
+		return $this->hardcore;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isSeasonal()
+	{
+		return $this->seasonal;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isDead()
+	{
+		return $this->dead;
 	}
 
 	/**
